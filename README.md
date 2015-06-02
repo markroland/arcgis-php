@@ -3,6 +3,8 @@ ArcGIS PHP Class
 
 A PHP class for interacting with ArcGIS for Developers (https://developers.arcgis.com).
 
+This is not a full implementation. At the time of this revision, this library only operates
+on the "geocodeAddresses" service.
 
 Copyright and License
 ---------------------

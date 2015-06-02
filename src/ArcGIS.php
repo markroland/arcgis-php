@@ -15,4 +15,169 @@ namespace markroland\ArcGIS;
 class ArcGIS
 {
 
+    /**
+     * Client ID
+     * @var string
+     */
+    private $client_id;
+
+    /**
+     * Secret
+     * @var string
+     */
+    private $secret;
+
+    /**
+     * API Token
+     * @var string
+     */
+    private $token;
+
+    /**
+     * A variable to hold debugging information
+     * @var array
+     */
+    public $debug = array();
+
+    /**
+     * Class constructor
+     *
+     * @param string $token Merchant ID
+     * @return null
+     **/
+    public function __construct($client_id, $secret)
+    {
+        if (isset($client_id) && isset($secret)) {
+
+            $this->token = $this->generateToken($client_id, $secret);
+
+            if (is_null($this->token)) {
+                throw new \Exception('Token could not be generated');
+            }
+
+        } else {
+            throw new \Exception('Client ID and Secret are required');
+        }
+
+    }
+
+    /**
+     * Send a HTTP request to the API
+     *
+     * @param string $http_method The HTTP method to be used (GET, POST, PUT, DELETE, etc.)
+     * @param string $api_method The API method to be called
+     * @param array $data Any data to be sent to the API
+     * @return string The raw API response from ArcGIS
+     **/
+    private function sendRequest($http_method, $api_method, $data = null)
+    {
+
+        // Standard data
+        $url = 'http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer' . $api_method;
+
+        // String assumed
+        if (strcasecmp($http_method, 'GET') == 0 && !empty($data)) {
+            $url .= '?' . $data;
+        }
+
+        // Debugging output
+        $this->debug = array();
+        $this->debug['HTTP Method'] = $http_method;
+        $this->debug['Request URL'] = $url;
+
+        // Create a cURL handle
+        $ch = curl_init();
+
+        // Set the request
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        // Save the response to a string
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // Set Request type
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $http_method);
+
+        // Send data
+        if (strcasecmp($http_method, 'POST') == 0 && !empty($data)) {
+
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+            // Debugging output
+            $this->debug['Posted Data'] = $data;
+
+        }
+
+        // Execute cURL request
+        $http_response = curl_exec($ch);
+
+        // Save CURL debugging info
+        $this->debug['Curl Info'] = curl_getinfo($ch);
+
+        // Close cURL handle
+        curl_close($ch);
+
+        // Return parsed response
+        return $http_response;
+    }
+
+    /**
+     * Generate a token
+     * @param string $client_id An ArcGIS Client ID
+     * @param string $secret An ArcGIS Secret
+     * @param int $expiration The lifetime of the token in seconds.
+     * @return null Token class property will be set on success
+     **/
+    private function generateToken($client_id, $secret, $expiration = 1440)
+    {
+
+        // TODO: Validate expiration input
+
+        // Set request data
+        $data = array(
+            'f' => 'json',
+            'client_id' => $client_id,
+            'client_secret' => $secret,
+            'grant_type' => 'client_credentials',
+            'expiration' => $expiration,
+        );
+
+        // Make request
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://www.arcgis.com/sharing/rest/oauth2/token/');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        $curl_response = curl_exec($ch);
+        curl_close($ch);
+
+        // Parse response
+        $response = json_decode($curl_response);
+
+        // Save token if response is successful
+        if (isset($response->access_token)) {
+            return $response->access_token;
+        }
+
+    }
+
+    /**
+     * Geocode a group of addresses
+     * @param object $addresses An object as defined by the ArcGIS API
+     * @return string The HTTP response as returned by ArcGIS
+     **/
+    public function geocodeAddresses($addresses)
+    {
+
+        $data = array(
+            'token' => $this->token,
+            'addresses' => json_encode($addresses),
+            'sourceCountry' => 'USA',
+            'f' => 'json'
+        );
+
+        $data = http_build_query($data);
+
+        return $this->sendRequest('GET', '/geocodeAddresses', $data);
+    }
 }
