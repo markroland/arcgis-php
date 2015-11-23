@@ -1,5 +1,5 @@
 {
-    "name": "markroland/ArcGIS-php",
+    "name": "markroland/arcgis-php",
     "description": "A PHP class for interacting with ArcGIS",
     "keywords": ["ArcGIS", "api", "ESRI", "geocode", "geocoding"],
     "homepage": "https://github.com/markroland/arcgis-php",
