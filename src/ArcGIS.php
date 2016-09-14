@@ -164,15 +164,18 @@ class ArcGIS
     /**
      * Geocode a group of addresses
      * @param object $addresses An object as defined by the ArcGIS API
+     * @param string $country Acceptable values include the full country name,
+     *   the ISO 3166-1 2-digit country code, or the ISO 3166-1 3-digit country code.
+     *   Defaults to empty string for compatibility with < v1.1.0
      * @return string The HTTP response as returned by ArcGIS
      **/
-    public function geocodeAddresses($addresses)
+    public function geocodeAddresses($addresses, $country = '')
     {
 
         $data = array(
             'token' => $this->token,
             'addresses' => json_encode($addresses),
-            'sourceCountry' => 'USA',
+            'sourceCountry' => $country,
             'f' => 'json'
         );
 
