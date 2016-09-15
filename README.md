@@ -5,6 +5,8 @@ A PHP class for interacting with ArcGIS for Developers (https://developers.arcgi
 This is not a full implementation. At the time of this revision, this library only operates
 on the "geocodeAddresses" service.
 
+Build Status: [![Build Status](https://travis-ci.org/markroland/arcgis-php.svg?branch=master)](https://travis-ci.org/markroland/arcgis-php)
+
 
 ## Copyright and License
 
