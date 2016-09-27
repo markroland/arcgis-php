@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Arc GIS" default="phplint" basedir="." description="A PHP class for interacting with ArcGIS for Developers ">
+
+    <property name="basedir" value="${project.basedir}" />
+    <property name="php_bin_path" value="/usr/bin/" />
+    <property name="bin_dir" value="/usr/local/bin"/>
+
+    <target name="phplint">
+        <echo msg="Performing phplint for syntax errors..." />
+        <phplint>
+            <fileset dir="./examples">
+                <include name="*.php" />
+            </fileset>
+            <fileset dir="./src">
+                <include name="*.php" />
+            </fileset>
+            <fileset dir="./tests">
+                <include name="*.php" />
+            </fileset>
+        </phplint>
+    </target>
+
+    <target name="phpunit" description="PHP Unit Testing">
+        <echo msg="Performing PHP Unit Tests..." />
+        <exec logoutput="true" command="phpunit" />
+    </target>
+
+</project>

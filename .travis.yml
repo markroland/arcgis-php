@@ -6,6 +6,11 @@ php:
   - 5.5
   - 5.4
   - 5.3
-  - hhvm
 
-script: phpunit
+before_install:
+  - pear channel-discover pear.phing.info
+  - pear install phing/phing
+  - phpenv rehash
+
+script:
+  - phing phplint phpunit

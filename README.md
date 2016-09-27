@@ -35,6 +35,12 @@ THE SOFTWARE.
 
 ## Build
 
+### Phing
+
+```sh
+    phing phplint phpunit
+```
+
 ### PHPUnit 
 
 ```sh
