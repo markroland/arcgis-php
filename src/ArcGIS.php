@@ -101,7 +101,7 @@ class ArcGIS
         if (strcasecmp($http_method, 'POST') == 0 && !empty($data)) {
 
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
             // Debugging output
             $this->debug['Posted Data'] = $data;
@@ -167,9 +167,10 @@ class ArcGIS
      * @param string $country Acceptable values include the full country name,
      *   the ISO 3166-1 2-digit country code, or the ISO 3166-1 3-digit country code.
      *   Defaults to empty string for compatibility with < v1.1.0
+     * @param string $method The HTTP method to use for the ArcGIS request, defaults to GET; alternative is POST
      * @return string The HTTP response as returned by ArcGIS
      **/
-    public function geocodeAddresses($addresses, $country = '')
+    public function geocodeAddresses($addresses, $country = '', $method = 'GET')
     {
 
         $data = array(
@@ -181,6 +182,6 @@ class ArcGIS
 
         $data = http_build_query($data);
 
-        return $this->sendRequest('GET', '/geocodeAddresses', $data);
+        return $this->sendRequest($method, '/geocodeAddresses', $data);
     }
 }
