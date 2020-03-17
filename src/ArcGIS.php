@@ -184,4 +184,25 @@ class ArcGIS
 
         return $this->sendRequest($method, '/geocodeAddresses', $data);
     }
+
+    /**
+     * Reverse Geocode a Location to an Address
+     * @param object $location An object as defined by the ArcGIS API
+     * @param string $method The HTTP method to use for the ArcGIS request, defaults to GET; alternative is POST
+     * @return string The HTTP response as returned by ArcGIS
+     **/
+    public function reverseGeocode($location, $method = 'GET')
+    {
+
+        $data = array(
+            'token' => $this->token,
+            'location' => json_encode($location),
+            'sourceCountry' => $country,
+            'f' => 'json'
+        );
+
+        $data = http_build_query($data);
+
+        return $this->sendRequest($method, '/reverseGeocode', $data);
+    }
 }
