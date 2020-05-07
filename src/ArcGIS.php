@@ -73,7 +73,7 @@ class ArcGIS
     {
 
         // Standard data
-        $url = 'http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer' . $api_method;
+        $url = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer' . $api_method;
 
         // String assumed
         if (strcasecmp($http_method, 'GET') == 0 && !empty($data)) {
